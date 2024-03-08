@@ -15,10 +15,7 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
     private FrameInput _frameInput;
-    //cached velocity reference before applying the movement
     private Vector2 _frameVelocity;
-    private float _horizontal;
-    private float _vertical;
     private bool _isFaceRight = true;
 
     private void Awake()
@@ -60,6 +57,8 @@ public class PlayerControl : MonoBehaviour
         GatherInput();
     }
 
+    private float _horizontal;
+    private float _vertical;
 
     //function to handle player input
     private void GatherInput()
@@ -82,7 +81,7 @@ public class PlayerControl : MonoBehaviour
             _timeJumpPressed = _stats.Timer;
         }
 
-        Crouching = _frameInput.CrouchHeld && IsGrounded && !Climbing? true: false;
+        _stats.Crouching = _frameInput.CrouchHeld && _stats.IsGrounded && !_stats.Climbing? true: false;
 
     }
     
@@ -100,7 +99,6 @@ public class PlayerControl : MonoBehaviour
     }
 
     #region Collision
-    public bool IsGrounded;
 
     private void CollisionCheck()
     {
@@ -113,13 +111,13 @@ public class PlayerControl : MonoBehaviour
         if(ceilingHit) _frameVelocity.y = Mathf.Min(0,_frameVelocity.y);
 
         //Land on ground
-        if(!IsGrounded && groundHit){
-            IsGrounded = true;
+        if(!_stats.IsGrounded && groundHit){
+            _stats.IsGrounded = true;
         }
 
         //leave the ground
-        if(IsGrounded && !groundHit){
-            IsGrounded = false;
+        if(_stats.IsGrounded && !groundHit){
+            _stats.IsGrounded = false;
             _timeLeftGround = _stats.Timer;
         }
     }
@@ -136,10 +134,10 @@ public class PlayerControl : MonoBehaviour
     }
     #endregion
 
-    #region Motion(Horizontal + Climbing)
+    #region Motion
     private float _tarSpeed;
-    public bool Crouching;
-    public bool Climbing;
+
+    #region _stats.Climbing
     private void OnTriggerStay2D(Collider2D _ladder)
     {   
         //Find the ladder
@@ -148,43 +146,43 @@ public class PlayerControl : MonoBehaviour
         //Catch the ladder
         if(_frameInput.ClimbAttempted)
         {
-            Climbing = true;
+            _stats.Climbing = true;
             //Align player to the ladder
             transform.position = new Vector3(_ladder.bounds.center.x, transform.position.y, transform.position.z);
         }    
     }
     //Exit the ladder
     private void OnTriggerExit2D(Collider2D _ladder) {
-        Climbing = false;
+        _stats.Climbing = false;
     }
+    #endregion
 
     private void HandleMotion()
     {
-        //holds player back while getting hurt
-        if(_stats.PlayerHurted) return;
+        //block player from moving while getting hurt
+        if(_stats.Hurted) return;
         
-        if(Climbing)
+        if(_stats.Climbing)
         {
             _frameVelocity.x = 0;
             _frameVelocity.y = _vertical * _stats.ClimbSpeed;
 
-            //blocking the horizontal motion if climbing
+            //blocking the horizontal motion if _stats.Climbing
             return;
         }
-        //Decceleration
+        //Deccelerating
         if(_frameInput.Move.x == 0)
         {
             _tarSpeed = 0;
-            float deccerlation = IsGrounded? _stats.GroundDecceleration : _stats.AirDecceleration;
+            float deccerlation = _stats.IsGrounded? _stats.GroundDecceleration : _stats.AirDecceleration;
             _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _tarSpeed, deccerlation);
             
         }
-        //Acceleration
+        //Accelerating
         else
         {
-            //Crouching
-            //IsGrounded check to prevent crouching mid-air
-            _tarSpeed = IsGrounded && Crouching? _stats.TopSpeed * _stats.CrouchSpeedModifier : _stats.TopSpeed;
+            //_stats.IsGrounded check to prevent crouching mid-air
+            _tarSpeed = _stats.IsGrounded && _stats.Crouching? _stats.TopSpeed * _stats.CrouchSpeedModifier : _stats.TopSpeed;
             _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _horizontal*_tarSpeed, _stats.Acceleration);
         }
     }
@@ -196,14 +194,17 @@ public class PlayerControl : MonoBehaviour
     private float _timeLeftGround = float.MinValue;
     private float _timeJumpPressed = float.MinValue;
 
+
+    //check if current time allowed to perform coyote jump or buffer jump
     private bool _canUseCoyote => _stats.Timer < _timeLeftGround + _stats.CoyoteTime;
     private bool _canUseBufferJump => _stats.Timer < _timeJumpPressed + _stats.BufferTime;
+
     private void HandleJump()
     {   
-        if(_stats.BounceOffHead || _stats.PlayerHurted) StartCoroutine(ForcedJump());
+        if(_stats.BounceOffHead || _stats.Hurted) StartCoroutine(ForcedJump());
         if(!_frameInput.JumpHeld && _rb.velocity.y > 0) _endedJumpEarly = true;
         if(!_jumpToConsume && !_canUseBufferJump) return;
-        if(IsGrounded || _canUseCoyote || Climbing) ExecuteJump();
+        if(_stats.IsGrounded || _canUseCoyote || _stats.Climbing) ExecuteJump();
         _jumpToConsume = false;
         
         
@@ -215,14 +216,14 @@ public class PlayerControl : MonoBehaviour
             _frameVelocity.y = _stats.StompBounceForce;
             _stats.BounceOffHead = false;
         }
-        if(_stats.PlayerHurted) 
+        if(_stats.Hurted) 
         {
-
+            //yield return allows full hurt animation 
             var oppositeFacing = _isFaceRight? -1: 1;
             _frameVelocity.x = _stats.KnockBackForce * oppositeFacing;
             _frameVelocity.y = _stats.KnockBackForce;
             yield return new WaitForSeconds(0.3f);
-            _stats.PlayerHurted = false;
+            _stats.Hurted = false;
         }
     }
     private void ExecuteJump()
@@ -231,7 +232,7 @@ public class PlayerControl : MonoBehaviour
         _timeJumpPressed = 0;
         _endedJumpEarly = false;
         //jump off the ladder
-        Climbing = false;
+        _stats.Climbing = false;
 
         _frameVelocity.y = _stats.JumpForce;
     }
@@ -240,10 +241,10 @@ public class PlayerControl : MonoBehaviour
     #region Gravity
     private void HandleGravity()
     {
-        //disable gravity when climbing
-        if(Climbing) return;
+        //disable gravity when _stats.Climbing
+        if(_stats.Climbing) return;
 
-        if(IsGrounded && _frameVelocity.y <= 0)
+        if(_stats.IsGrounded && _frameVelocity.y <= 0)
         {
             _frameVelocity.y = _stats.GroundingForce;
         }

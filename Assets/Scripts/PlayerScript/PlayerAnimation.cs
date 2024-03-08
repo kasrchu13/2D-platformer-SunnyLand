@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     [SerializeField]private PlayerMain _stats;
-    private PlayerControl _player;
     private Rigidbody2D _rb;
     private Animator _anim;
 
@@ -18,7 +17,6 @@ public class PlayerAnimation : MonoBehaviour
     private void Awake() 
     {
         _rb = GetComponent<Rigidbody2D>();
-        _player = GetComponent<PlayerControl>();
         _anim = GetComponent<Animator>();
     }
     private int _state;
@@ -32,10 +30,10 @@ public class PlayerAnimation : MonoBehaviour
     }
     private int ChangeState()
     {
-        if(_stats.PlayerHurted) return HURT;
-        if(_player.Crouching) return CROUCH;
-        if(_player.Climbing) return CLIMB;
-        if(!_player.IsGrounded) return _rb.velocity.y >= 0? JUMP: FALL;
+        if(_stats.Hurted) return HURT;
+        if(_stats.Crouching) return CROUCH;
+        if(_stats.Climbing) return CLIMB;
+        if(!_stats.IsGrounded) return _rb.velocity.y >= 0? JUMP: FALL;
         return _rb.velocity.x == 0? IDLE: RUN;
 
     }

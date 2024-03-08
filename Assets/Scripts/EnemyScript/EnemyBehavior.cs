@@ -122,7 +122,7 @@ public class EnemyBehavior : MonoBehaviour, IBodyCollision, IWeakPointCollision
     #region interface
     public void BodyHit()
     {
-        _playerStats.PlayerHurted = true;
+        _playerStats.Hurted = true;
         _playerStats.PlayerHealth -= _enemyStats.MobDmg;
     }
 

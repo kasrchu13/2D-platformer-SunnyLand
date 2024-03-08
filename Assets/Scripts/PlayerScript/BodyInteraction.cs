@@ -8,8 +8,8 @@ public class BodyInteraction : MonoBehaviour
     #region Pick up items
     private void OnTriggerEnter2D(Collider2D item)
     {
-        ICollectable _collectable = item.GetComponent<ICollectable>();
-        if(_collectable != null) _collectable.Collect();
+        ICollectable _item = item.GetComponent<ICollectable>();
+        if(_item != null) _item.Collect();
     }
     #endregion
 
@@ -17,8 +17,8 @@ public class BodyInteraction : MonoBehaviour
     #region Encouter enemies
     private void OnCollisionEnter2D(Collision2D enemy) 
     {
-        IBodyCollision _combat = enemy.collider.GetComponent<IBodyCollision>();
-        if(_combat != null) _combat.BodyHit();
+        IBodyCollision _enemy = enemy.collider.GetComponent<IBodyCollision>();
+        if(_enemy != null) _enemy.BodyHit();
     }
     #endregion
 
