@@ -8,7 +8,6 @@ public class ItemFeedback: MonoBehaviour, ICollectable
     [SerializeField] private PlayerMain _stats;
     private Animator _anim;
     private bool _yetToCollect= true;
-
     private void Awake()
     {
         _anim = GetComponent<Animator>();
@@ -20,7 +19,7 @@ public class ItemFeedback: MonoBehaviour, ICollectable
     IEnumerator CollectingFeedback()
     {
         _yetToCollect = false;
-        _stats.PlayerScore += 1;
+        GameManager.Instance.PlayerScore += 1;
         _anim.Play("Item_FeedBack");
         yield return new WaitForSeconds(1);
         Destroy(this.gameObject);

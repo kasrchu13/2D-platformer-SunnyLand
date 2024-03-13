@@ -7,8 +7,8 @@ public class FeetInteraction : MonoBehaviour
     #region stomp on weakpoint
     private void OnTriggerEnter2D(Collider2D enemy)
     {
-        IWeakPointCollision _enemy = enemy.GetComponent<IWeakPointCollision>();
-        if(_enemy != null) _enemy.WeakPointHit();
+        IWeakPointCollision tarEnemy = enemy.GetComponent<IWeakPointCollision>();
+        if(tarEnemy != null) tarEnemy.WeakPointHit();
     }
     #endregion
 }

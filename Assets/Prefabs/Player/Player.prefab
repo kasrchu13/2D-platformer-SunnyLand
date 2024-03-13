@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 4513480539762801511}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -23.01, y: 15.42, z: 0}
-  m_LocalScale: {x: 5.7200637, y: 5.7200637, z: 0.57200646}
+  m_LocalScale: {x: 5.720064, y: 5.720064, z: 0.5720065}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3441064323581270708}
@@ -162,10 +162,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: 20869b8a4f968c24294d58455367da0b, type: 2}
-  _gameEndedScreen: {fileID: 0}
-  IsGrounded: 0
-  Crouching: 0
-  Climbing: 0
 --- !u!114 &4513480539762801504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +213,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7052361882193162741}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.002, y: -0.111, z: 0}
+  m_LocalPosition: {x: -0.001, y: -0.127, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

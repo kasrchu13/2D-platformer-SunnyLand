@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using System;
 
 public class BodyInteraction : MonoBehaviour
 {
     #region Pick up items
     private void OnTriggerEnter2D(Collider2D item)
     {
-        ICollectable _item = item.GetComponent<ICollectable>();
-        if(_item != null) _item.Collect();
+        ICollectable tarItem = item.GetComponent<ICollectable>();
+        if(tarItem != null) tarItem.Collect();
     }
     #endregion
 
@@ -17,8 +18,8 @@ public class BodyInteraction : MonoBehaviour
     #region Encouter enemies
     private void OnCollisionEnter2D(Collision2D enemy) 
     {
-        IBodyCollision _enemy = enemy.collider.GetComponent<IBodyCollision>();
-        if(_enemy != null) _enemy.BodyHit();
+        IBodyCollision tarEnemy = enemy.collider.GetComponent<IBodyCollision>();
+        if(tarEnemy != null) tarEnemy.BodyHit();
     }
     #endregion
 

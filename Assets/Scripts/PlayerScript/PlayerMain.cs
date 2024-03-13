@@ -60,8 +60,6 @@ public class PlayerMain : ScriptableObject
 
     #region Player Base Stats
     [Header("Base Stats")]
-    public int PlayerHealth;
-    public int PlayerScore = 0;
     [Tooltip("Damage deal upon stomping")]
     public int PlayerDamge = 1;
     [Tooltip("Bounceiness when stomping on enemy")]
@@ -78,14 +76,8 @@ public class PlayerMain : ScriptableObject
     public bool BounceOffHead = false;
     public bool Hurted = false;
     #endregion
-    [Tooltip("Global Timer")]
-    public float Timer = 0.0f;
-    [Tooltip("Calculated at the start of the game how many objective inside the stage")]
-    public int MaxScore;
-    public bool GameFinished;
 
 }
-
 
     
 

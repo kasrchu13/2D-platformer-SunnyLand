@@ -11,49 +11,21 @@ using Unity.VisualScripting;
 public class PlayerControl : MonoBehaviour
 {
     [SerializeField]private PlayerMain _stats;
-    [SerializeField]private GameEndedScript _gameEndedScreen;
     private Rigidbody2D _rb;
     private CapsuleCollider2D _col;
     private FrameInput _frameInput;
     private Vector2 _frameVelocity;
     private bool _isFaceRight = true;
+    private float _timer;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<CapsuleCollider2D>();
-        _stats.MaxScore = GameObject.FindGameObjectsWithTag("Item").Length; 
     }
-
-    private void Start()
-    {
-        _stats.GameFinished = false;
-        _stats.PlayerHealth = 3;
-        _stats.PlayerScore = 0;
-        _stats.Timer = 0;
-    }
-
-
     private void Update()
     {
-        //stop the game if game is finished
-        Time.timeScale = _stats.GameFinished? 0: 1;
-
-        //funciton GameEnded(bool) takes true as winning
-        if(_stats.PlayerHealth <= 0)
-        {
-            //losing
-            _stats.GameFinished = true;
-            _gameEndedScreen.GameEnded(false);
-        }
-        else if(_stats.PlayerScore == _stats.MaxScore)
-        {
-            //winning
-            _stats.GameFinished = true;;
-            _gameEndedScreen.GameEnded(true);
-        }
-
-        _stats.Timer += Time.deltaTime;
+        _timer = GameManager.Instance.GlobalTimer;
         GatherInput();
     }
 
@@ -78,7 +50,7 @@ public class PlayerControl : MonoBehaviour
         if(_frameInput.JumpDown)
         {
             _jumpToConsume = true;
-            _timeJumpPressed = _stats.Timer;
+            _timeJumpPressed = _timer;
         }
 
         _stats.Crouching = _frameInput.CrouchHeld && _stats.IsGrounded && !_stats.Climbing? true: false;
@@ -118,7 +90,7 @@ public class PlayerControl : MonoBehaviour
         //leave the ground
         if(_stats.IsGrounded && !groundHit){
             _stats.IsGrounded = false;
-            _timeLeftGround = _stats.Timer;
+            _timeLeftGround = _timer;
         }
     }
     #endregion
@@ -196,8 +168,8 @@ public class PlayerControl : MonoBehaviour
 
 
     //check if current time allowed to perform coyote jump or buffer jump
-    private bool _canUseCoyote => _stats.Timer < _timeLeftGround + _stats.CoyoteTime;
-    private bool _canUseBufferJump => _stats.Timer < _timeJumpPressed + _stats.BufferTime;
+    private bool _canUseCoyote => _timer < _timeLeftGround + _stats.CoyoteTime;
+    private bool _canUseBufferJump => _timer < _timeJumpPressed + _stats.BufferTime;
 
     private void HandleJump()
     {   

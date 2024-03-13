@@ -3,17 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+//this script should assign to GameEnded canvas
 public class GameEndedScript : MonoBehaviour
 {
-    public TextMeshProUGUI EndedLine;
-    public void GameEnded(bool win){
-        gameObject.SetActive(true);
-        if(win) EndedLine.text = "Congratulation";
-        else EndedLine.text = "Game Over";
+    private void OnEnable()
+    {
+        GameManager.OnGameStateChanged += DisplayGameEndedScreen;
     }
+    private void OnDisable()
+    {
+        GameManager.OnGameStateChanged -= DisplayGameEndedScreen;
+    }
+
+    public TextMeshProUGUI EndedLine;
+
+    private void DisplayGameEndedScreen(GameState state)
+    {
+        gameObject.SetActive(state == GameState.Victory || state == GameState.Lose);
+
+        if(state == GameState.Victory) EndedLine.text = "Congratulation";
+        if(state == GameState.Lose) EndedLine.text = "Game Over";
+    } 
+
 
     #region Button Event
     public void GoToScene(string sceneName){

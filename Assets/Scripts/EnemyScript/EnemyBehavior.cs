@@ -38,7 +38,7 @@ public class EnemyBehavior : MonoBehaviour, IBodyCollision, IWeakPointCollision
     private float _currentTime;
     private void Update()
     {
-        _currentTime = _playerStats.Timer;
+        _currentTime = GameManager.Instance.GlobalTimer;
     }
 
 
@@ -123,7 +123,7 @@ public class EnemyBehavior : MonoBehaviour, IBodyCollision, IWeakPointCollision
     public void BodyHit()
     {
         _playerStats.Hurted = true;
-        _playerStats.PlayerHealth -= _enemyStats.MobDmg;
+        GameManager.Instance.PlayerHealth -= _enemyStats.MobDmg;
     }
 
 
