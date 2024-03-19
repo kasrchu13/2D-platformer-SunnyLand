@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 //this script should assign to GameManager object
@@ -12,10 +8,7 @@ public class GameManager : MonoBehaviour
     public GameState State;
     public static event Action<GameState> OnGameStateChanged;
 
-
     
-    [SerializeField]private int _initialHealth = 3;
-    [SerializeField]private int _initialScore = 0;
     public int PlayerHealth;
     public int PlayerScore;
     public int MaxScore;
@@ -24,7 +17,15 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if(Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
     }
 
     private void Start()
@@ -39,7 +40,7 @@ public class GameManager : MonoBehaviour
 
     public void UpdateGameState(GameState newState)
     {
-        //Guard to prevent duplicated call. Only allow 
+        //Guard to prevent duplicated call.
         if(newState == State && newState != GameState.GameInitialize) return;
         State = newState;
 
@@ -72,8 +73,8 @@ public class GameManager : MonoBehaviour
     {
         //Initaialize all data
         Time.timeScale = 1;
-        PlayerHealth = _initialHealth;
-        PlayerScore = _initialScore;
+        PlayerHealth = PlayerMain.PlayerInitialHealth;
+        PlayerScore = PlayerMain.PlayerinitialScore;
         GlobalTimer = 0.0f;
         MaxScore = GameObject.FindGameObjectsWithTag("Item").Length; 
         UpdateGameState(GameState.Playing);

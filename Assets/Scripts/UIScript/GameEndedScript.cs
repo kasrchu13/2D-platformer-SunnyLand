@@ -10,11 +10,11 @@ using UnityEngine.UI;
 //this script should assign to GameEnded canvas
 public class GameEndedScript : MonoBehaviour
 {
-    private void OnEnable()
+    private void Awake()
     {
         GameManager.OnGameStateChanged += DisplayGameEndedScreen;
     }
-    private void OnDisable()
+    private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= DisplayGameEndedScreen;
     }

@@ -58,10 +58,12 @@ public class PlayerMain : ScriptableObject
     #endregion
 
 
-    #region Player Base Stats
-    [Header("Base Stats")]
+    #region Player Interaction Stats
+    [Header("Interaction Stats")]
+    public static int PlayerInitialHealth = 3;
+    public static int PlayerinitialScore = 0;
     [Tooltip("Damage deal upon stomping")]
-    public int PlayerDamge = 1;
+    public static int PlayerDamge = 1;
     [Tooltip("Bounceiness when stomping on enemy")]
     public float StompBounceForce = 2;
     [Tooltip("Push back force when collided with enemy")]

@@ -8,11 +8,11 @@ using UnityEngine.SceneManagement;
 //this script should assign to PauseMenu canvas
 public class PauseMenuScript : MonoBehaviour
 {
-    private void OnEnable() 
+    private void Awake() 
     {
         GameManager.OnGameStateChanged += DisplayPauseMenu;
     }
-    private void OnDisable() 
+    private void OnDestroy() 
     {
         GameManager.OnGameStateChanged -= DisplayPauseMenu;
     }

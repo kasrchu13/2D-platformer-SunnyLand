@@ -21,6 +21,7 @@ public class PlayerAnimation : MonoBehaviour
     }
     private int _state;
     private int _currentState;
+    private float LockUntil;
     private void Update() 
     {
         _state = ChangeState();
@@ -30,12 +31,21 @@ public class PlayerAnimation : MonoBehaviour
     }
     private int ChangeState()
     {
-        if(_stats.Hurted) return HURT;
+        if(GameManager.Instance.GlobalTimer < LockUntil) return _state;
+
+        if(_stats.Hurted) return LockState(HURT, 0.3f);
         if(_stats.Crouching) return CROUCH;
         if(_stats.Climbing) return CLIMB;
         if(!_stats.IsGrounded) return _rb.velocity.y >= 0? JUMP: FALL;
         return _rb.velocity.x == 0? IDLE: RUN;
 
+    }
+
+    //Allow certain animation(state) to play though period of time(locktime) 
+    private int LockState(int state, float locktime)
+    {
+        LockUntil = GameManager.Instance.GlobalTimer + locktime;
+        return state;
     }
 }
     

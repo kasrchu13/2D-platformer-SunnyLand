@@ -8,11 +8,11 @@ public class FeetInteraction : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D enemy)
     {
         IWeakPointCollision tarEnemy = enemy.GetComponent<IWeakPointCollision>();
-        if(tarEnemy != null) tarEnemy.WeakPointHit();
+        if(tarEnemy != null) tarEnemy.WeakPointHit(PlayerMain.PlayerDamge);
     }
     #endregion
 }
 public interface IWeakPointCollision
     {
-        void WeakPointHit();
+        void WeakPointHit(int damageDealt);
     }

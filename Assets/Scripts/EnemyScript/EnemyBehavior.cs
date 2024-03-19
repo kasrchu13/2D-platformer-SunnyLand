@@ -57,8 +57,12 @@ public class EnemyBehavior : MonoBehaviour, IBodyCollision, IWeakPointCollision
     private bool _facingRight;
     private void HandleRoaming()
     {
+        //Set groundforce to negative makes sure it touched the ground
+        //Set to positive to prevent sticking due to composited tile collider
+        var groundforce = transform.position.x == _currentPos? 1.5f:-1.5f;
+
         _dir = _facingRight? 1: -1;
-        _frameVelocity = new Vector2(_dir * _enemyStats.MoveSpeed, -1.5f);
+        _frameVelocity = new Vector2(_dir * _enemyStats.MoveSpeed, groundforce);
         _currentPos = transform.position.x;
     }
 
@@ -110,14 +114,14 @@ public class EnemyBehavior : MonoBehaviour, IBodyCollision, IWeakPointCollision
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
     
-
+    #endregion
     private void ApplyMovement() 
     {
         _rb.velocity = _frameVelocity;
     }
 
 
-    #endregion
+   
     
     #region interface
     public void BodyHit()
@@ -127,10 +131,10 @@ public class EnemyBehavior : MonoBehaviour, IBodyCollision, IWeakPointCollision
     }
 
 
-    public void WeakPointHit()
+    public void WeakPointHit(int damage)
     {
         _playerStats.BounceOffHead = true;
-        _enemyStats.Health -= _playerStats.PlayerDamge;
+        _enemyStats.Health -= damage;
         if(_enemyStats.Health <= 0) 
         {
             _enemyStats.IsDefeated = true;
