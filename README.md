@@ -1,6 +1,6 @@
 # 2D platformer SunnyLand
 
-This is a sample project to demonstrate the coding abilities in C#
+This is a sample project to demonstrate the coding abilities in C#.
 In this project, I tried to practice some essential elements in a normal 2D platformer, they are:
 
 1. Better 2D control including coyote time, jump buffering and vaiable jump height, etc.   (Assets/Scripts/PlayerScript/PlayerControl & PlayerMain)
